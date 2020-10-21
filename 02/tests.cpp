@@ -22,7 +22,7 @@ int main()
 
         tp.SetStartCallback([&start] () { start = true; });
         tp.SetDigitTokenCallback([&digit] (int num) { digit = true; });
-        tp.SetStringTokenCallback([&string] (std::string str) { string = true; });
+        tp.SetStringTokenCallback([&string] (const std::string& str) { string = true; });
 
         tp.ParseString("");
         assert(start && !finish);

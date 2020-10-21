@@ -45,7 +45,7 @@ void TokenParser::SetDigitTokenCallback(std::function<void(int)> func) {
 }
 
 
-void TokenParser::SetStringTokenCallback(std::function<void(std::string)> func) {
+void TokenParser::SetStringTokenCallback(std::function<void(const std::string&)> func) {
     StringTokenCallback = func;
 }
 
