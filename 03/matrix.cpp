@@ -41,6 +41,10 @@ Matrix::Matrix(size_t rows, size_t columns)
 
 Matrix::~Matrix()
 {
+    for (size_t i = 0; i < rows_; ++i)
+    {
+        data_[i].~Row();
+    }
     free(data_);
 }
 
