@@ -26,12 +26,12 @@ public:
     ~Matrix();
 
     Row &operator[](size_t row);
-    Row operator[](size_t row) const;
+    const Row& operator[](size_t row) const;
 
     size_t getRows() const;
     size_t getColumns() const;
 
-    void operator*=(int value);
+    Matrix& operator*=(int value);
     Matrix operator+(const Matrix &other) const;
     bool operator==(const Matrix &other) const;
     bool operator!=(const Matrix &other) const;

@@ -57,7 +57,7 @@ Row &Matrix::operator[](size_t row)
     return data_[row];
 }
 
-Row Matrix::operator[](size_t row) const
+const Row& Matrix::operator[](size_t row) const
 {
     if (row >= rows_)
     {
@@ -76,7 +76,7 @@ size_t Matrix::getColumns() const
     return columns_;
 }
 
-void Matrix::operator*=(int value)
+Matrix& Matrix::operator*=(int value)
 {
     for (size_t i = 0; i < rows_; ++i)
     {
@@ -85,6 +85,7 @@ void Matrix::operator*=(int value)
             data_[i][j] *= value;
         }
     }
+    return *this;
 }
 
 Matrix Matrix::operator+(const Matrix &other) const
