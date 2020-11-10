@@ -48,7 +48,9 @@ BigInt::BigInt(const std::string& str)
 
 BigInt::~BigInt()
 {
-    free(_data);
+    if (_data != nullptr) {
+        free(_data);
+    }
 }
 
 BigInt& BigInt::operator=(const BigInt& other)
@@ -63,7 +65,9 @@ BigInt& BigInt::operator=(const BigInt& other)
     for (size_t i = 0; i < _size; ++i) {
         new_data[i] = other._data[i];
     }
-    free(_data);
+    if (_data != nullptr) {
+        free(_data);
+    }
     _data = new_data;
     return *this;
 }
@@ -73,6 +77,9 @@ BigInt& BigInt::operator=(BigInt&& other)
     _sign = other._sign;
     _capacity = other._capacity;
     _size = other._size;
+    if (_data != nullptr) {
+        free(_data);
+    }
     _data = other._data;
     other._data = nullptr;
     return *this;
@@ -216,9 +223,14 @@ std::ostream& operator<<(std::ostream& os, const BigInt& bigint)
 
 void BigInt::init_int(int value)
 {
+    char* new_data;
     if (value == 0) {
-        _data = static_cast<char*>(malloc(sizeof(char)));
-        _data[0] = 0;
+        new_data = static_cast<char*>(malloc(sizeof(char)));
+        new_data[0] = 0;
+        if (_data != nullptr) {
+            free(_data);
+        }
+        _data = new_data;
         return;
     }
     value *= _sign;
@@ -229,36 +241,58 @@ void BigInt::init_int(int value)
         ++_capacity;
         tmp /= 10;
     }
-    _data = static_cast<char*>(malloc(_capacity * sizeof(char)));
+    new_data = static_cast<char*>(malloc(_capacity * sizeof(char)));
     for (size_t i = 0; i < _size; ++i) {
-        _data[i] = value % 10;
+        new_data[i] = value % 10;
         value /= 10;
     }
+    if (_data != nullptr) {
+        free(_data);
+    }
+    _data = new_data;
 }
 
 void BigInt::init_string(const std::string& str)
 {
+    char* new_data;
     if (str.size() == 0) {
         _size = _capacity = 1;
-        _data =  static_cast<char*>(malloc(sizeof(char)));
-        _data[0] = 0;
+        new_data =  static_cast<char*>(malloc(sizeof(char)));
+        new_data[0] = 0;
+        if (_data != nullptr) {
+            free(_data);
+        }
+        _data = new_data;
         return;
     }
     _sign = (str[0] == '-' ? -1 : 1);
-
-    if (_sign == 1) {
-        _size = _capacity = str.size();
-        _data =  static_cast<char*>(malloc(_capacity * sizeof(char)));
-        for (size_t i = 0; i < str.size(); ++i) {
-            _data[i] = str[str.size() - 1 - i] - '0';
-        }
-    } else {
-        _size = _capacity = str.size() - 1;
-        _data =  static_cast<char*>(malloc(_capacity * sizeof(char)));
-        for (size_t i = 0; i < str.size() - 1; ++i) {
-            _data[i] = str[str.size() - 1 - i] - '0';
+    size_t forward_zeros = 0;
+    for (size_t i = 0; i < str.size(); ++i) {
+        if (str[i] == '0') {
+            ++forward_zeros;
+        } else {
+            break;
         }
     }
+
+    if (_sign == 1) {
+        _size = _capacity = str.size() - forward_zeros;
+        new_data =  static_cast<char*>(malloc(_capacity * sizeof(char)));
+        for (size_t i = 0; i < str.size() - forward_zeros; ++i) {
+            new_data[i] = str[str.size() - 1 - i] - '0';
+        }
+    } else {
+        _size = _capacity = str.size() - 1 - forward_zeros;
+        new_data =  static_cast<char*>(malloc(_capacity * sizeof(char)));
+        for (size_t i = 0; i < str.size() - 1 - forward_zeros; ++i) {
+            new_data[i] = str[str.size() - 1 - i] - '0';
+        }
+    }
+
+    if (_data != nullptr) {
+        free(_data);
+    }
+    _data = new_data;
 }
 
 BigInt BigInt::add_bigint(const BigInt& other) const

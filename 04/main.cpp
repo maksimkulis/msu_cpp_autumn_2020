@@ -89,6 +89,10 @@ void constructors()
         BigInt b(a);
         assert(b == 12345);
     }
+    {
+        BigInt a("000015");
+        assert(a == 15);
+    }
 }
 
 void op_eq()

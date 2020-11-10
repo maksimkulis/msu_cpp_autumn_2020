@@ -32,7 +32,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const BigInt& bigint);
 
 private:
-    char* _data;
+    char* _data = nullptr;
     char _sign;
     size_t _capacity;
     size_t _size;
