@@ -93,6 +93,14 @@ void constructors()
         BigInt a("000015");
         assert(a == 15);
     }
+    {
+        BigInt a("0000");
+        assert(a == 0);
+    }
+    {
+        BigInt a("-0000");
+        assert(a == 0);
+    }
 }
 
 void op_eq()

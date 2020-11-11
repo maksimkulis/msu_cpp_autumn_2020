@@ -220,17 +220,22 @@ std::ostream& operator<<(std::ostream& os, const BigInt& bigint)
     return os;
 }
 
+void BigInt::init_zero()
+{
+    _size = _capacity = _sign = 1;
+    char* new_data = static_cast<char*>(malloc(sizeof(char)));
+    new_data[0] = 0;
+    if (_data != nullptr) {
+        free(_data);
+    }
+    _data = new_data;
+}
 
 void BigInt::init_int(int value)
 {
     char* new_data;
     if (value == 0) {
-        new_data = static_cast<char*>(malloc(sizeof(char)));
-        new_data[0] = 0;
-        if (_data != nullptr) {
-            free(_data);
-        }
-        _data = new_data;
+        init_zero();
         return;
     }
     value *= _sign;
@@ -256,18 +261,12 @@ void BigInt::init_string(const std::string& str)
 {
     char* new_data;
     if (str.size() == 0) {
-        _size = _capacity = 1;
-        new_data =  static_cast<char*>(malloc(sizeof(char)));
-        new_data[0] = 0;
-        if (_data != nullptr) {
-            free(_data);
-        }
-        _data = new_data;
+        init_zero();
         return;
     }
     _sign = (str[0] == '-' ? -1 : 1);
     size_t forward_zeros = 0;
-    for (size_t i = 0; i < str.size(); ++i) {
+    for (size_t i = (_sign == 1 ? 0 : 1); i < str.size(); ++i) {
         if (str[i] == '0') {
             ++forward_zeros;
         } else {
@@ -276,18 +275,27 @@ void BigInt::init_string(const std::string& str)
     }
 
     if (_sign == 1) {
+        if (str.size() - forward_zeros == 0) {
+            init_zero();
+            return;
+        }
         _size = _capacity = str.size() - forward_zeros;
         new_data =  static_cast<char*>(malloc(_capacity * sizeof(char)));
         for (size_t i = 0; i < str.size() - forward_zeros; ++i) {
             new_data[i] = str[str.size() - 1 - i] - '0';
         }
     } else {
+        if (str.size() - 1 - forward_zeros == 0) {
+            init_zero();
+            return;
+        }
         _size = _capacity = str.size() - 1 - forward_zeros;
         new_data =  static_cast<char*>(malloc(_capacity * sizeof(char)));
         for (size_t i = 0; i < str.size() - 1 - forward_zeros; ++i) {
             new_data[i] = str[str.size() - 1 - i] - '0';
         }
     }
+
 
     if (_data != nullptr) {
         free(_data);

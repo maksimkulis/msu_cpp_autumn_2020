@@ -38,6 +38,7 @@ private:
     size_t _size;
 
 private:
+    void init_zero();
     void init_int(int value);
     void init_string(const std::string& str);
     bool abs_greater(const BigInt& other) const;
