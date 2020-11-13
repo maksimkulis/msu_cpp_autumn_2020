@@ -98,12 +98,11 @@ public:
     {
         std::string str;
         in_ >> str;
-        value = 0;
-        for (auto c : str) {
-            if (value > value * 10 + c - '0') {
-                return Error::CorruptedArchive;
-            }
-            value = value * 10 + c - '0';
+
+        std::stringstream stream(str);
+        stream >> value;
+        if (std::to_string(value) != str) {
+            return Error::CorruptedArchive;
         }
         return Error::NoError;
     }
