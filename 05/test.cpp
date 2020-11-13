@@ -80,6 +80,17 @@ int main()
         assert(y.c == 500);
     }
 
+    {
+        auto s = std::stringstream("-500 false 500");
+        Deserializer d(s);
+        assert (d.load(y) == Error::CorruptedArchive);
+    }
+
+    {
+        auto s = std::stringstream("50000000000000000000 false 500");
+        Deserializer d(s);
+        assert (d.load(y) == Error::CorruptedArchive);
+    }
     std::cout << "TESTS OK" << std::endl;
     return 0;
 }
