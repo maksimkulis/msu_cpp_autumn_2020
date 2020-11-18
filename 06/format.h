@@ -11,8 +11,16 @@
 enum class status {
     CHAR,
     OPEN_BRACE,
-    CLOSE_BRACE,
     DIGIT
+};
+
+class MyException: public std::runtime_error
+{
+public:
+    MyException(const char* message)
+        : std::runtime_error(message)
+    {
+    }
 };
 
 void unpacking(std::stringstream& stream, std::vector<std::string>& vec)
@@ -50,7 +58,7 @@ std::string format(const std::string& str, Args&&... args)
         switch(st){
         case status::CHAR:
             if (c == '}') {
-                throw std::runtime_error("Closing bracket before opening one");
+                throw MyException("Closing bracket before opening one");
             } else if (c != '{') {
                 stream << c;
             } else {
@@ -61,7 +69,7 @@ std::string format(const std::string& str, Args&&... args)
 
         case status::OPEN_BRACE:
             if (!std::isdigit(c)) {
-                throw std::runtime_error("Digit expected");
+                throw MyException("Digit expected");
             } else {
                 index = c - '0';
                 st = status::DIGIT;
@@ -73,20 +81,20 @@ std::string format(const std::string& str, Args&&... args)
                 index = index * 10 + c - '0';
             } else if (c == '}') {
                 if (index >= vec.size()) {
-                    throw std::runtime_error("Not enough arguments");
+                    throw MyException("Not enough arguments");
                 }
                 stream << vec[index];
                 st = status::CHAR;
             } else {
-                throw std::runtime_error("Digit expected");
+                throw MyException("Digit expected");
             }
             break;
         default:
-            throw std::runtime_error("???");
+            throw MyException("???");
         }
     }
     if (st == status::OPEN_BRACE || st == status::DIGIT) {
-        throw std::runtime_error("Bad string");
+        throw MyException("Bad string");
     }
     return stream.str();
 }

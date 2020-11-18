@@ -4,7 +4,7 @@
 
 #include "format.h"
 
-#define check_err(str, ...) {bool err = false; try {format(str, __VA_ARGS__);} catch(std::runtime_error) {err = true;} assert(err);}
+#define check_err(str, ...) {bool err = false; try {format(str, __VA_ARGS__);} catch(MyException) {err = true;} assert(err);}
 
 int main()
 {
