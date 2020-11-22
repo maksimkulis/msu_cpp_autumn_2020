@@ -23,33 +23,33 @@ public:
     }
 };
 
-void unpacking(std::stringstream& stream, std::vector<std::string>& vec)
+void unpacking(std::vector<std::string>& vec)
 {
 }
 
 template<class T>
-void unpacking(std::stringstream& stream, std::vector<std::string>& vec, T&& arg)
+void unpacking(std::vector<std::string>& vec, const T& arg)
 {
+    std::stringstream stream;
     stream << arg;
     vec.push_back(stream.str());
-    stream.str("");
 }
 
 template<class T, class... Args>
-void unpacking(std::stringstream& stream, std::vector<std::string>& vec, T&& arg, Args&&... args)
+void unpacking(std::vector<std::string>& vec, const T& arg, const Args&... args)
 {
+    std::stringstream stream;
     stream << arg;
     vec.push_back(stream.str());
-    stream.str("");
-    unpacking(stream, vec, std::forward<Args>(args)...);
+    unpacking(vec, args...);
 }
 
 template<class... Args>
-std::string format(const std::string& str, Args&&... args)
+std::string format(const std::string& str, const Args&... args)
 {
     std::vector<std::string> vec;
     std::stringstream stream;
-    unpacking(stream, vec, std::forward<Args>(args)...);
+    unpacking(vec, args...);
 
     auto st = status::CHAR;
     size_t index = 0;
