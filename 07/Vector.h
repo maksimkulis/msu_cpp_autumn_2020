@@ -172,6 +172,29 @@ public:
         alloc_.deallocate(data_, capacity_);
     }
 
+    Vector& operator=(const Vector& other){
+        T* new_data = alloc_.allocate(other.size_);
+        for (size_t i = 0; i < other.size_; ++i) {
+            alloc_.construct(new_data + i, other[i]);
+        }
+        for (size_t i = 0; i < size_; ++i) {
+            alloc_.destroy(data_ + i);
+        }
+        alloc_.deallocate(data_, capacity_);
+        data_ = new_data;
+        size_ = other.size_;
+        capacity_ = other.capacity_;
+        return *this;
+    }
+
+    Vector& operator=(Vector&& other) {
+        data_ = other.data_;
+        other.data_ = nullptr;
+        size_ = other.size_;
+        capacity_ = other.capacity_;
+        return *this;
+    }
+
     T& operator[](size_type i) {
         return data_[i];
     }
