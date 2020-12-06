@@ -5,7 +5,7 @@ all: tests
 tests: threadpool.h tests.cpp
 	$(CC) tests.cpp -o prog
 
-run: tests
+test: tests
 	./prog
 
 clean:
