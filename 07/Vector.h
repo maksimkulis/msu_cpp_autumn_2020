@@ -191,6 +191,10 @@ public:
     }
 
     Vector& operator=(Vector&& other) {
+        for (size_t i = 0; i < size_; ++i) {
+            alloc_.destroy(data_ + i);
+        }
+        alloc_.deallocate(data_, capacity_);
         data_ = other.data_;
         other.data_ = nullptr;
         size_ = other.size_;
