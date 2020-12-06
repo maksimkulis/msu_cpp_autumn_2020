@@ -173,6 +173,9 @@ public:
     }
 
     Vector& operator=(const Vector& other){
+        if (&other == this) {
+            return *this;
+        }
         T* new_data = alloc_.allocate(other.size_);
         for (size_t i = 0; i < other.size_; ++i) {
             alloc_.construct(new_data + i, other[i]);
