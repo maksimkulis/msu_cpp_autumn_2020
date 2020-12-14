@@ -57,7 +57,7 @@ public:
 
     ~ThreadPool() {
         {
-            std::unique_lock<std::mutex>{mutex};
+            std::unique_lock<std::mutex> lock{mutex};
             running = false;
         }
         cond_var.notify_all();
